@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.smbms.dao.user.UserDao">
+    <select id="login" resultType="cn.smbms.pojo.User">
+        SELECT * FROM smbms_user WHERE userCode=#{userCode} AND userPassword=#{userPassword}
+    </select>
+
+    <select id="getLoginUser" resultType="cn.smbms.pojo.User">
+        SELECT * FROM smbms_user WHERE userCode=#{userCode}
+    </select>
+
+
+    <select id="getUserList" resultType="cn.smbms.pojo.User">
+        SELECT * FROM smbms_user
+        <where>
+            <if test="userName!=null and userName!=''">
+                userName LIKE Concat("%",#{userName},"%")
+            </if>
+            <if test="userRole!=0">
+                AND userRole=#{userRole}
+            </if>
+        </where>
+        limit #{currentPageNo},#{pageSize}
+    </select>
+
+    <select id="getUserCount" resultType="int">
+        SELECT COUNT(*) FROM smbms_user
+        <where>
+            <if test="userName!=null and userName!=''">
+                userName LIKE Concat("%",#{userName},"%")
+            </if>
+            <if test="userRole!=0">
+                AND userRole=#{userRole}
+            </if>
+        </where>
+    </select>
+
+    <delete id="deleteUserById">
+        DELETE FROM smbms_user WHERE id=#{id}
+    </delete>
+
+
+    <select id="getUserById" resultType="cn.smbms.pojo.User">
+        SELECT * FROM smbms_user WHERE id=#{id}
+    </select>
+
+    <!--添加用户-->
+    <insert id="add">
+        insert into smbms_user( id, userCode, userName, userPassword, gender, birthday, phone, address, userRole, createdBy, creationDate, modifyBy, modifyDate,idPicPath)
+        values (#{id}, #{userCode}, #{userName}, #{userPassword}, #{gender}, #{birthday}, #{phone},
+        #{address}, #{userRole}, #{createdBy}, #{creationDate}, #{modifyBy}, #{modifyDate},#{idPicPath})
+    </insert>
+
+
+    <!--修改用户-->
+    <update id="modify">
+        update smbms_user
+        <set>
+            <if test="userCode!=null">userCode=#{userCode},</if>
+            <if test="userName!=null">userName=#{userName},</if>
+            <if test="userPassword!=null">userPassword=#{userPassword},</if>
+            <if test="gender!=null ">gender=#{gender},</if>
+            <if test="birthday!=null">birthday=#{birthday},</if>
+            <if test="phone!=null ">phone=#{phone},</if>
+            <if test="address!=null">address=#{address},</if>
+            <if test="userRole!=null ">userRole=#{userRole},</if>
+            <if test="createdBy!=null ">createdBy=#{createdBy},</if>
+            <if test="creationDate!=null">creationDate=#{creationDate},</if>
+            <if test="modifyBy!=null">modifyBy=#{modifyBy},</if>
+            <if test="modifyDate!=null">modifyDate=#{modifyDate},</if>
+            <if test="userRoleName!=null">userRoleName=#{userRoleName},</if>
+        </set>
+        <where>
+            id=#{id}
+        </where>
+    </update>
+
+    <update id="updatePwd">
+        update smbms_user set userPassword=#{pwd} WHERE id=#{id}
+    </update>
+</mapper>
